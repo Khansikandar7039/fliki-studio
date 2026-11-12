@@ -1,164 +1,77 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#101322"><title>Fliki Studio — Free Video Maker</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fliki Studio</title>
 <style>
-:root{color-scheme:dark;--bg:#0b1020;--panel:#151c30;--muted:#aab4cc;--accent:#8b5cf6;--line:#29334d}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#0b1020,#17132c);color:#f7f7fb;font:15px system-ui,-apple-system,Segoe UI,sans-serif}
-header{padding:20px 14px 10px;text-align:center}header h1{margin:0;font-size:26px}header p{margin:6px 0;color:var(--muted)}
-main{max-width:920px;margin:auto;padding:10px 13px 42px}.panel{background:rgba(21,28,48,.97);border:1px solid var(--line);border-radius:17px;padding:15px;margin:12px 0}
-h2{font-size:17px;margin:0 0 10px}.hint,.small{font-size:12px;color:var(--muted);line-height:1.5}
-label{display:block;font-weight:650;margin:12px 0 6px}textarea,input[type=text],select{width:100%;background:#0d1426;color:#fff;border:1px solid #35415f;border-radius:11px;padding:11px;font:inherit}
-textarea{min-height:115px;resize:vertical;line-height:1.5}input[type=file]{width:100%;padding:9px;background:#0d1426;border:1px dashed #465272;border-radius:11px;color:#dbe2f3}
-button{border:0;border-radius:11px;padding:11px 14px;background:var(--accent);color:white;font-weight:750;font-size:14px;cursor:pointer;min-height:42px}
-button.secondary{background:#27334f}button.danger{background:#7f1d1d}button:disabled{opacity:.5}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.btns button{flex:1}
-canvas{width:100%;height:auto;aspect-ratio:16/9;background:#05070c;border-radius:12px;display:block}
-.scene{background:#0d1426;border:1px solid #34405c;border-radius:12px;padding:11px;margin:9px 0}
-.scenehead{display:flex;justify-content:space-between;align-items:center;gap:8px}.scenehead b{font-size:13px}
-.scene textarea{min-height:65px}.scene .row{grid-template-columns:1fr 1fr}.scene button{padding:8px;font-size:12px}
-#status{padding:11px;border-radius:10px;background:#0d1426;color:#d8def0;font-size:13px;margin-top:11px;min-height:40px}
-.pill{display:inline-block;padding:4px 8px;border-radius:20px;background:#302354;color:#ddd6fe;font-size:11px;margin:3px}
-hr{border:0;border-top:1px solid var(--line);margin:14px 0}
-@media(max-width:560px){.row{grid-template-columns:1fr}.panel{padding:12px}header h1{font-size:23px}.scene .row{grid-template-columns:1fr 1fr}}
-</style></head>
+:root{--bg:#10131d;--panel:#1b2030;--muted:#aab2c5;--accent:#7c5cff;--line:#30384d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f5f6fb;font:15px system-ui,Arial,sans-serif}
+header{padding:22px 16px;background:linear-gradient(130deg,#39227e,#171b2b);text-align:center}
+h1{margin:0 0 5px;font-size:27px}header p{margin:0;color:#ddd}
+main{max-width:900px;margin:auto;padding:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:16px;margin:14px 0}
+h2{font-size:19px;margin:0 0 12px}label{display:block;font-weight:600;margin:12px 0 6px}
+textarea,input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#111625;color:white;font:inherit}
+textarea{min-height:130px;resize:vertical}button{border:0;border-radius:10px;padding:11px 14px;background:var(--accent);color:white;font-weight:700;margin:6px 5px 4px 0;cursor:pointer}
+button.secondary{background:#343d55}button.danger{background:#a83b53}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
+small,.muted{color:var(--muted)}.scene{border:1px solid var(--line);padding:12px;border-radius:12px;margin:10px 0}
+.scene textarea{min-height:70px}.scene canvas{width:100%;max-height:170px;object-fit:contain;background:#090c13;border-radius:8px}
+canvas#preview{width:100%;background:#080a10;border-radius:12px;display:block}
+#status{color:#b8aaff;white-space:pre-wrap}.pill{display:inline-block;padding:4px 8px;border-radius:20px;background:#2b3150;color:#d9d1ff;font-size:12px}
+</style>
+</head>
 <body>
-<header><h1>✨ Fliki Studio</h1><p>Free personal text-to-video studio · Runs in your browser</p><span class="pill">No account</span><span class="pill">No credits</span><span class="pill">Local processing</span></header>
+<header><h1>Fliki Studio</h1><p>Free browser-based video maker · No account · No credits</p></header>
 <main>
-<section class="panel">
-<h2>1. Script & scenes</h2><p class="hint">Paste your script. Each non-empty line becomes one editable scene. Hindi and English text are supported.</p>
-<label for="script">Video script</label><textarea id="script">नमस्कार दोस्तों!
-आज हम एक नई और मजेदार कहानी सीखेंगे।
-वीडियो को अंत तक जरूर देखना।</textarea>
-<div class="btns"><button id="build" class="secondary">Build scenes from script</button><button id="addScene" class="secondary">＋ Add scene</button></div>
-<div id="scenes"></div>
-</section>
-<section class="panel">
-<h2>2. Voice & audio</h2>
+<section class="card">
+<h2>1. Write your video script</h2>
+<p class="muted">Har nayi line ek alag scene banegi. Baad mein scenes edit bhi kar sakte ho.</p>
+<label for="script">Your script</label>
+<textarea id="script" placeholder="Welcome to my channel!\nToday we are learning something amazing.\nLet's get started!"></textarea>
 <div class="row">
-<div><label for="voiceLang">Voice language</label><select id="voiceLang"><option value="hi-IN">Hindi</option><option value="en-IN">English (India)</option><option value="en-US">English (US)</option><option value="auto">Auto / device default</option></select></div>
-<div><label for="rate">Speech speed</label><select id="rate"><option value=".8">Slow</option><option value="1" selected>Normal</option><option value="1.15">Fast</option></select></div>
+<div><label for="lang">Voice language</label><select id="lang"><option value="hi-IN">Hindi</option><option value="en-US">English</option><option value="en-GB">English (UK)</option></select></div>
+<div><label for="seconds">Seconds per scene</label><input id="seconds" type="number" min="1" max="30" value="4"></div>
+<div><label for="ratio">Video format</label><select id="ratio"><option value="16:9">Landscape 16:9</option><option value="9:16">Portrait 9:16</option><option value="1:1">Square 1:1</option></select></div>
 </div>
-<div class="btns"><button id="speak" class="secondary">🔊 Speak current scene</button><button id="speakAll" class="secondary">Speak all scenes</button><button id="stopSpeak" class="secondary">Stop voice</button></div>
-<label for="narration">Narration audio file (optional)</label><input id="narration" type="file" accept="audio/*">
-<p class="hint">Browser voice preview uses voices installed on your phone. For voice inside the exported video, upload a narration audio file. Built-in speech preview cannot reliably be recorded into the video by mobile browsers.</p>
-<label for="music">Background music (optional)</label><input id="music" type="file" accept="audio/*">
+<button onclick="makeScenes()">Create scenes</button><button class="secondary" onclick="speakAll()">🔊 Listen to all scenes</button><button class="secondary" onclick="speechSynthesis.cancel()">Stop voice</button>
 </section>
-<section class="panel">
-<h2>3. Images & scene visuals</h2>
-<p class="hint">Upload a separate image for each scene below. You can also use the suggested image prompt to create an image in any image tool and upload it here. This offline app does not generate AI images itself.</p>
-<label for="globalImage">Use one image for all scenes (optional)</label><input id="globalImage" type="file" accept="image/*">
-<div class="row">
-<div><label for="ratio">Video format</label><select id="ratio"><option value="landscape">YouTube 16:9</option><option value="portrait">Reels / Shorts 9:16</option><option value="square">Square 1:1</option></select></div>
-<div><label for="duration">Seconds per scene</label><select id="duration"><option>3</option><option selected>4</option><option>5</option><option>6</option><option>8</option><option>10</option></select></div>
-</div>
-<div class="row">
-<div><label for="captionStyle">Subtitle style</label><select id="captionStyle"><option value="box">White text / dark box</option><option value="plain">White text with shadow</option><option value="none">No subtitles</option></select></div>
-<div><label for="transition">Scene transition</label><select id="transition"><option value="fade">Fade</option><option value="cut">Cut</option></select></div>
-</div>
+<section class="card"><h2>2. Edit your scenes</h2><div id="scenes"><p class="muted">Pehle script likhkar Create scenes dabao.</p></div><button class="secondary" onclick="addScene()">＋ Add scene</button></section>
+<section class="card">
+<h2>3. Add media</h2>
+<label>Default background image</label><input id="bgImage" type="file" accept="image/*">
+<label>Voice / narration audio</label><input id="voiceAudio" type="file" accept="audio/*">
+<label>Background music</label><input id="musicAudio" type="file" accept="audio/*">
+<p class="muted">Apni images aur audio files upload karo. Voice preview browser/device voice use karta hai.</p>
 </section>
-<section class="panel">
-<h2>4. Preview & editor</h2>
+<section class="card">
+<h2>4. Preview video</h2>
 <canvas id="preview" width="1280" height="720"></canvas>
-<div class="btns"><button id="prev" class="secondary">◀ Previous</button><button id="play" class="secondary">▶ Play preview</button><button id="next" class="secondary">Next ▶</button></div>
-<p class="small">Preview uses your scene text and uploaded image. Export keeps this format and burns captions into the video.</p>
+<button onclick="previewVideo()">▶ Preview scenes</button><button class="secondary" onclick="stopPreview()">↺ Stop preview</button>
+<p id="status"></p>
 </section>
-<section class="panel">
+<section class="card">
 <h2>5. Export video</h2>
-<p class="hint">MP4 is used only if your browser supports MP4 recording. Otherwise this app exports WebM. Keep this page open and your screen awake during export.</p>
-<div class="btns"><button id="export">⬇ Render & download video</button></div>
-<div id="status">Ready. Build scenes, add images/audio, then export.</div>
-</section>
-<section class="panel">
-<h2>What this free version can and cannot do</h2>
-<p class="hint"><b>Included:</b> editable scenes, image uploads, Hindi/English browser voice preview, uploaded narration/music, burned-in subtitles, landscape/portrait/square canvas, preview and browser video export.</p>
-<p class="hint"><b>Not included:</b> cloud AI image generation, premium neural voices, voice cloning, AI avatars or guaranteed MP4 on every phone. Those require external services, models or more processing than a static free website can provide.</p>
+<button onclick="exportVideo()">⬇ Export video</button>
+<p class="muted">Browser support ke hisaab se MP4 ya WebM export hoga. Export ke dauran page open rakho aur screen lock mat karo.</p>
+<p class="muted">Note: Ye local browser editor hai. Cloud AI image generation, premium neural voices, voice cloning aur AI avatars ke liye external services/API chahiye hoti hain.</p>
 </section>
 </main>
 <script>
-const $=id=>document.getElementById(id),canvas=$('preview'),ctx=canvas.getContext('2d');
-let data=[],current=0,globalImg=null,previewLoop=null,objectUrls=[];
-const makeScene=(text='New scene')=>({text,image:null,imageUrl:null});
-function build(){data=$('script').value.split(/\n+/).map(x=>x.trim()).filter(Boolean).map(makeScene);if(!data.length)data=[makeScene('Write your scene here')];current=0;renderList();draw()}
-function renderList(){
- const root=$('scenes');root.innerHTML='';
- data.forEach((s,i)=>{
-  const el=document.createElement('div');el.className='scene';
-  const head=document.createElement('div');head.className='scenehead';
-  const title=document.createElement('b');title.textContent=`Scene ${i+1}`;
-  const tools=document.createElement('div');
-  const up=document.createElement('button');up.className='secondary';up.textContent='↑';up.disabled=i===0;up.onclick=()=>move(i,-1);
-  const down=document.createElement('button');down.className='secondary';down.textContent='↓';down.disabled=i===data.length-1;down.onclick=()=>move(i,1);
-  const del=document.createElement('button');del.className='danger';del.textContent='Delete';del.onclick=()=>{data.splice(i,1);if(!data.length)data=[makeScene()];current=Math.min(current,data.length-1);renderList();draw()};
-  tools.append(up,down,del);head.append(title,tools);el.append(head);
-  const ta=document.createElement('textarea');ta.value=s.text;ta.setAttribute('aria-label',`Scene ${i+1} text`);ta.oninput=()=>{s.text=ta.value; if(i===current)draw()};el.append(ta);
-  const file=document.createElement('input');file.type='file';file.accept='image/*';file.setAttribute('aria-label',`Scene ${i+1} image`);
-  file.onchange=e=>{const f=e.target.files[0];if(!f)return;const u=URL.createObjectURL(f);objectUrls.push(u);const im=new Image();im.onload=()=>{s.image=im;s.imageUrl=u;draw()};im.src=u};el.append(file);
-  const prompt=document.createElement('p');prompt.className='small';prompt.textContent='Image idea: '+(s.text?`Illustration showing: ${s.text.slice(0,150)}. Cinematic composition, no text.`:'Add a scene description.');el.append(prompt);
-  const edit=document.createElement('button');edit.className='secondary';edit.textContent='Show this scene';edit.onclick=()=>{current=i;draw();window.scrollTo({top:canvas.getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'})};el.append(edit);
-  root.append(el);
- });
-}
-function move(i,d){const j=i+d;[data[i],data[j]]=[data[j],data[i]];current=j;renderList();draw()}
-function setSize(){let r=$('ratio').value;if(r==='portrait'){canvas.width=720;canvas.height=1280}else if(r==='square'){canvas.width=900;canvas.height=900}else{canvas.width=1280;canvas.height=720}draw()}
-function linesFor(text,max,font){ctx.font=font;let out=[],line='';for(const word of text.split(/\s+/)){let t=line?line+' '+word:word;if(ctx.measureText(t).width>max&&line){out.push(line);line=word}else line=t}if(line)out.push(line);return out}
-function draw(textOverride=null,idx=current,progress=0){
- const s=data[idx]||makeScene('Your video starts here'),w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);
- const im=s.image||globalImg;
- if(im){let sc=Math.max(w/im.width,h/im.height),iw=im.width*sc,ih=im.height*sc;ctx.drawImage(im,(w-iw)/2,(h-ih)/2,iw,ih)}
- else{let g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,'#172554');g.addColorStop(.5,'#6d28d9');g.addColorStop(1,'#111827');ctx.fillStyle=g;ctx.fillRect(0,0,w,h)}
- ctx.fillStyle='rgba(0,0,0,.24)';ctx.fillRect(0,0,w,h);
- const text=textOverride===null?s.text:textOverride;
- if($('captionStyle').value!=='none'&&text){
-  let size=Math.round(w*.052),font=`700 ${size}px system-ui`,max=w*.84,ls=linesFor(text,max,font);
-  while(ls.length>7&&size>24){size-=3;font=`700 ${size}px system-ui`;ls=linesFor(text,max,font)}
-  let lh=size*1.28,block=ls.length*lh,y=h*.72-block/2;
-  if($('captionStyle').value==='box'){ctx.fillStyle='rgba(0,0,0,.62)';ctx.fillRect(w*.055,y-size*.35,w*.89,block+size*.7)}
-  ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=font;
-  ls.forEach((line,i)=>{if($('captionStyle').value==='plain'){ctx.lineWidth=5;ctx.strokeStyle='#000';ctx.strokeText(line,w/2,y+i*lh+lh/2)}ctx.fillStyle='white';ctx.fillText(line,w/2,y+i*lh+lh/2)});
- }
- ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.fillStyle='rgba(255,255,255,.85)';ctx.font=`${Math.max(14,w*.018)}px system-ui`;ctx.fillText(`${idx+1} / ${Math.max(1,data.length)}`,w*.05,h*.94);
- ctx.fillStyle='rgba(255,255,255,.3)';ctx.fillRect(w*.05,h*.965,w*.9,Math.max(4,w*.005));ctx.fillStyle='#a78bfa';ctx.fillRect(w*.05,h*.965,w*.9*Math.max(0,Math.min(1,progress)),Math.max(4,w*.005));
-}
-function stopPreview(){if(previewLoop){clearInterval(previewLoop);previewLoop=null}}
-$('build').onclick=build;$('addScene').onclick=()=>{data.push(makeScene());current=data.length-1;renderList();draw()};
-$('prev').onclick=()=>{current=Math.max(0,current-1);draw()};$('next').onclick=()=>{current=Math.min(data.length-1,current+1);draw()};
-$('play').onclick=()=>{stopPreview();let i=0;current=0;draw();previewLoop=setInterval(()=>{i++;if(i>=data.length){stopPreview();return}current=i;draw()},Number($('duration').value)*1000)};
-$('ratio').onchange=setSize;$('captionStyle').onchange=()=>draw();
-$('globalImage').onchange=e=>{let f=e.target.files[0];if(!f)return;let u=URL.createObjectURL(f);objectUrls.push(u);let im=new Image();im.onload=()=>{globalImg=im;draw()};im.src=u};
-function speak(text){if(!('speechSynthesis'in window)){setStatus('Speech synthesis is not supported in this browser.');return}speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(text);let l=$('voiceLang').value;if(l!=='auto')u.lang=l;u.rate=Number($('rate').value);speechSynthesis.speak(u)}
-$('speak').onclick=()=>speak((data[current]||makeScene()).text);$('speakAll').onclick=()=>{if(!('speechSynthesis'in window))return; speechSynthesis.cancel();data.forEach(s=>{let u=new SpeechSynthesisUtterance(s.text);let l=$('voiceLang').value;if(l!=='auto')u.lang=l;u.rate=Number($('rate').value);speechSynthesis.speak(u)})};
-$('stopSpeak').onclick=()=>{if('speechSynthesis'in window)speechSynthesis.cancel()};
-function setStatus(t){$('status').textContent=t}
-function supportedMime(){if(!window.MediaRecorder)return '';for(let t of ['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'])if(MediaRecorder.isTypeSupported(t))return t;return ''}
-$('export').onclick=async()=>{
- stopPreview();if(!data.length){setStatus('Please add at least one scene.');return}
- if(!canvas.captureStream||!window.MediaRecorder){setStatus('This browser cannot record canvas video. Try updated Chrome.');return}
- let mime=supportedMime();if(!mime){setStatus('This browser has no supported MP4/WebM recording format.');return}
- let btn=$('export');btn.disabled=true;let ac=null,urls=[],audioEls=[];
- try{
-  const tracks=[...canvas.captureStream(30).getVideoTracks()];
-  const files=[$('narration').files[0],$('music').files[0]].filter(Boolean);
-  if(files.length&&window.AudioContext){
-   ac=new (window.AudioContext||window.webkitAudioContext)();await ac.resume();
-   let dest=ac.createMediaStreamDestination();
-   for(const f of files){let a=new Audio();let u=URL.createObjectURL(f);urls.push(u);a.src=u;a.loop=true;a.volume=files.length===2?(f===$('music').files[0]?.25:1):1;let src=ac.createMediaElementSource(a);src.connect(dest);src.connect(ac.destination);audioEls.push(a)}
-   dest.stream.getAudioTracks().forEach(t=>tracks.push(t));
-  }
-  const stream=new MediaStream(tracks),chunks=[],rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:5000000});
-  rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
-  let stopped=new Promise((res,rej)=>{rec.onstop=res;rec.onerror=()=>rej(Error('Recording error'))});
-  rec.start(500);for(const a of audioEls)await a.play().catch(()=>{});
-  let secs=Number($('duration').value);
-  for(let i=0;i<data.length;i++){
-   let start=performance.now(),dur=secs*1000;
-   while(performance.now()-start<dur){let p=(performance.now()-start)/dur;draw(null,i,p);setStatus(`Rendering scene ${i+1}/${data.length} — ${Math.round((i+p)/data.length*100)}%`);await new Promise(r=>setTimeout(r,33))}
-  }
-  audioEls.forEach(a=>a.pause());rec.stop();await stopped;
-  let mp4=mime.includes('mp4'),blob=new Blob(chunks,{type:mp4?'video/mp4':'video/webm'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='fliki-studio-video.'+(mp4?'mp4':'webm');document.body.appendChild(a);a.click();a.remove();setStatus(`Done! Download started: ${a.download}. Export format: ${mp4?'MP4':'WebM'}.`);setTimeout(()=>URL.revokeObjectURL(url),60000);
- }catch(e){setStatus('Export failed: '+e.message+'. Try fewer scenes or a shorter video.')}
- finally{audioEls.forEach(a=>a.pause());if(ac)await ac.close().catch(()=>{});urls.forEach(URL.revokeObjectURL);btn.disabled=false}
-};
-build();setSize();
-</script></body></html>
+let scenes=[],timer=null,sceneIndex=0,globalImage=null,recording=false;
+const $=id=>document.getElementById(id);
+function makeScenes(){const lines=$('script').value.split('\n').map(x=>x.trim()).filter(Boolean);scenes=lines.map((text,i)=>({text,image:null}));renderScenes();}
+function addScene(){scenes.push({text:'New scene',image:null});renderScenes();}
+function renderScenes(){const host=$('scenes');host.innerHTML='';scenes.forEach((s,i)=>{const d=document.createElement('div');d.className='scene';d.innerHTML=`<div class="row"><strong>Scene ${i+1}</strong><span class="pill">Scene text</span></div><textarea aria-label="Scene text"></textarea><label>Scene image (optional)</label><input type="file" accept="image/*"><div><button class="secondary up">↑ Move up</button><button class="secondary down">↓ Move down</button><button class="danger del">Delete</button><button class="secondary voice">Listen</button></div>`;const ta=d.querySelector('textarea');ta.value=s.text;ta.addEventListener('input',()=>s.text=ta.value);const file=d.querySelector('input');file.addEventListener('change',()=>{if(file.files[0]){const r=new FileReader();r.onload=()=>{s.image=new Image();s.image.onload=()=>{};s.image.src=r.result};r.readAsDataURL(file.files[0]);}});d.querySelector('.up').onclick=()=>{if(i>0){[scenes[i-1],scenes[i]]=[scenes[i],scenes[i-1]];renderScenes()}};d.querySelector('.down').onclick=()=>{if(i<scenes.length-1){[scenes[i+1],scenes[i]]=[scenes[i],scenes[i+1]];renderScenes()}};d.querySelector('.del').onclick=()=>{scenes.splice(i,1);renderScenes()};d.querySelector('.voice').onclick=()=>speak(s.text);host.appendChild(d);});}
+function speak(t){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=$('lang').value;speechSynthesis.speak(u)}
+function speakAll(){speechSynthesis.cancel();let i=0;function next(){if(i>=scenes.length)return;const u=new SpeechSynthesisUtterance(scenes[i++].text);u.lang=$('lang').value;u.onend=next;speechSynthesis.speak(u)}next()}
+$('bgImage').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{globalImage=new Image();globalImage.onload=()=>drawScene(0);globalImage.src=r.result};r.readAsDataURL(f)});
+function dimensions(){const r=$('ratio').value;return r==='9:16'?[720,1280]:r==='1:1'?[900,900]:[1280,720]}
+function fitImage(ctx,img,w,h){const scale=Math.max(w/img.width,h/img.height),iw=img.width*scale,ih=img.height*scale;ctx.drawImage(img,(w-iw)/2,(h-ih)/2,iw,ih)}
+function drawScene(i){const c=$('preview'),ctx=c.getContext('2d'),[w,h]=dimensions();c.width=w;c.height=h;ctx.fillStyle='#111827';ctx.fillRect(0,0,w,h);const s=scenes[i];const img=s?.image||globalImage;if(img&&img.complete)fitImage(ctx,img,w,h);ctx.fillStyle='rgba(0,0,0,.52)';ctx.fillRect(0,h*.65,w,h*.35);ctx.fillStyle='white';ctx.textAlign='center';ctx.font=`bold ${Math.max(28,w*.045)}px Arial`;wrapText(ctx,s?.text||'Add a scene to begin',w*.82,h*.77,w*.09);}
+function wrapText(ctx,text,maxWidth,y,lineHeight){const words=text.split(' ');let line='',lines=[];for(const word of words){const test=line+word+' ';if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word+' '}else line=test}lines.push(line);lines.slice(0,4).forEach((l,i)=>ctx.fillText(l.trim(),$('preview').width/2,y+i*lineHeight));}
+function previewVideo(){if(!scenes.length){$('status').textContent='Pehle scenes create karo.';return}stopPreview();sceneIndex=0;const sec=Math.max(1,Number($('seconds').value)||4)*1000;drawScene(0);timer=setInterval(()=>{sceneIndex++;if(sceneIndex>=scenes.length){stopPreview();return}drawScene(sceneIndex)},sec);$('status').textContent='Preview chal raha hai…';}
+function stopPreview(){if(timer)clearInterval(timer);timer=null;}
+async function exportVideo(){if(!scenes.length){$('status').textContent='Pehle scenes create karo.';return}const canvas=$('preview');const stream=canvas.captureStream(30);let mime='video/webm';if(MediaRecorder.isTypeSupported('video/mp4'))mime='video/mp4';else if(MediaRecorder.isTypeSupported('video/webm;codecs=vp9'))mime='video/webm;codecs=vp9';let chunks=[];let rec;try{rec=new MediaRecorder(stream,{mimeType:mime})}catch(e){$('status').textContent='Is browser mein video export supported nahi hai.';return}rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};rec.onstop=()=>{const blob=new Blob(chunks,{type:mime});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='fliki-studio-video.'+(mime.includes('mp4')?'mp4':'webm');a.click();URL.revokeObjectURL(url);$('status').textContent='Video download start ho gaya.'};rec.start();$('status').textContent='Video render ho raha hai…';const sec=Math.max(1,Number($('seconds').value)||4)*1000;for(let i=0;i<scenes.length;i++){drawScene(i);await new Promise(r=>setTimeout(r,sec))}rec.stop();}
+drawScene(0);
+</script>
+</body></html>
